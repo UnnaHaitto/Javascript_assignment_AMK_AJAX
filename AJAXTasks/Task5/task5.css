@@ -28,3 +28,12 @@ td {
 .highlight {
   background-color: red;
 }
+
+dialog .restaurant-address {
+  padding-bottom: 15px;
+  border-bottom: solid 2px black;
+}
+
+.error {
+  color: red;
+}

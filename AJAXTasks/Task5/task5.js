@@ -13,11 +13,12 @@ async function fetchRestaurants() {
       restaurants.push(restaurant);
     }
 
-    console.log(restaurants);
-
     displaySortedRestaurants();
     addRestaurantClickListeners();
   } catch (error) {
+    const table = document.querySelector("table tbody");
+    table.innerHTML =
+      "<tr><td class='error'>Restaurant load failed. Try again.</td></tr>";
     console.log(error.message);
   }
 }
@@ -76,18 +77,26 @@ async function addRestaurantClickListeners() {
 
           menu = await getMenu(id);
 
-          console.log(menu.courses[1].name);
-          console.log(menu.courses[1].price);
-          console.log(menu.courses[1].diets);
+          if (menu == null) {
+            return;
+          }
 
-          let html = "";
+          html += "<h1>" + restaurant.name + "</h1>";
+          html +=
+            "<h3 class='restaurant-address'>" + restaurant.address + "</h3>";
 
-          html += "<h3> Daily menu </h3>";
-          html += "<p></p>";
-
-          let dialog = document.querySelector("dialog");
-
-          dialog.innerHTML = html;
+          html += "<h2> Daily menu </h2>";
+          if (menu.courses.length == 0) {
+            html += "No daily menu available.";
+          } else {
+            for (let i = 0; i < menu.courses.length; i++) {
+              html += "<h3> Option " + (i + 1) + " </h3>";
+              html += "<p>Food: " + menu.courses[i].name + "</p>";
+              html += "<p>Price: " + menu.courses[i].price + "</p>";
+              html +=
+                "<p>Dietary restrictions: " + menu.courses[i].diets + "</p>";
+            }
+          }
         }
       }
 
@@ -117,6 +126,16 @@ async function getMenu(id) {
     const answer = await response.json();
     return answer;
   } catch (error) {
+    let dialog = document.querySelector("dialog");
+    dialog.innerHTML =
+      '<h1 class="error">The menu fetch failed. Try again.</h1>';
+    dialog.showModal();
+    dialog.addEventListener("click", function (evt) {
+      if (evt.target == dialog) {
+        dialog.close();
+      }
+    });
     console.log(error.message);
+    return null;
   }
 }
