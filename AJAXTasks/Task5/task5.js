@@ -61,7 +61,7 @@ async function addRestaurantClickListeners() {
   let allTrElements = document.querySelectorAll("tr");
 
   allTrElements.forEach(function (tr) {
-    tr.addEventListener("click", function (evt) {
+    tr.addEventListener("click", async function (evt) {
       allTrElements.forEach(removeHighlight);
 
       tr.classList.add("highlight");
@@ -72,12 +72,13 @@ async function addRestaurantClickListeners() {
 
       for (let restaurant of restaurants) {
         if (restaurant.name == name) {
-          /*
           const id = restaurant._id;
 
-          getMenu(id);
+          menu = await getMenu(id);
 
           console.log(menu.courses[1].name);
+          console.log(menu.courses[1].price);
+          console.log(menu.courses[1].diets);
 
           let html = "";
 
@@ -86,7 +87,7 @@ async function addRestaurantClickListeners() {
 
           let dialog = document.querySelector("dialog");
 
-          dialog.innerHTML = html;*/
+          dialog.innerHTML = html;
         }
       }
 
@@ -114,7 +115,7 @@ async function getMenu(id) {
     );
     if (!response.ok) throw new Error("Invalid input!");
     const answer = await response.json();
-    menu = answer;
+    return answer;
   } catch (error) {
     console.log(error.message);
   }
